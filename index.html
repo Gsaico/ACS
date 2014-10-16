@@ -8,6 +8,10 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+	
+	<script src="raphael-min.js"></script>
+	<script src="underscore-min.js"></script>
+	<script src="sequence-diagram-min.js"></script>
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -112,57 +116,61 @@ A typical L.A.M.P setup can be used for this. Laravel as a PHP MVC framework wou
 <h3>
 <a name="general-door-access" class="anchor" href="#general-door-access"><span class="octicon octicon-link"></span></a>General Door Access</h3>
 
-<pre lang="sequence"><code>User-&gt;Client Node: Touch RFID card to access point at front door
+<div class="diagram">
+User->Client Node: Touch RFID card to access point at front door
 Note right of Client Node: Client reads RFID UUID
-Client Node-&gt;Server Node: "Access Attempted" message request
+Client Node->Server Node: "Access Attempted" message request
 Note right of Server Node: Server records attempt
 Note right of Server Node: Server retrieves record
-Server Node--&gt;Client Node: "Access Granted" message response
-Client Node--&gt;User: Display Message to User
+Server Node-->Client Node: "Access Granted" message response
+Client Node-->User: Display Message to User
 Note right of Client Node: Open door lock
-</code></pre>
+</div>
 
 <h3>
 <a name="general-lab-equipment-access" class="anchor" href="#general-lab-equipment-access"><span class="octicon octicon-link"></span></a>General Lab Equipment Access</h3>
 
-<pre lang="sequence"><code>User-&gt;Client Node: Touch RFID card to access point on equipment
+<div class="diagram">
+User->Client Node: Touch RFID card to access point on equipment
 Note right of Client Node: Client reads RFID UUID
-Client Node-&gt;Server Node: "Access Attempted" message request
+Client Node->Server Node: "Access Attempted" message request
 Note right of Server Node: Server records attempt
 Note right of Server Node: Server retrieves record
-Server Node--&gt;Client Node: "Access Granted" message response
-Client Node--&gt;User: Display Message to User
+Server Node-->Client Node: "Access Granted" message response
+Client Node-->User: Display Message to User
 Note right of Client Node: Allow equipment power on
-</code></pre>
+</div>
 
 <h3>
 <a name="grant-a-user-access-to-lab-equipment" class="anchor" href="#grant-a-user-access-to-lab-equipment"><span class="octicon octicon-link"></span></a>Grant a User Access to Lab Equipment</h3>
 
-<pre lang="sequence"><code>Master Key-&gt;Client Node: Touch RFID card to access point
+<div class="diagram">
+Master Key->Client Node: Touch RFID card to access point
 Note right of Client Node: Read RFID UUID\n Recognises Master Key
-Client Node--&gt;Master Key: Display "Master operation mode activated"
+Client Node-->Master Key: Display "Master operation mode activated"
 Note right of Client Node: Power on equipment\n Begin User registration timeout...
-Master Key-&gt;Client Node: Touch RFID card to access point
+Master Key->Client Node: Touch RFID card to access point
 Note right of Client Node: Read RFID UUID\n Recognises Master Key\n Touched within timeout?\n Yes - Power off equipment
-Client Node--&gt;Master Key: Display "Touch User to Add Access"
+Client Node-->Master Key: Display "Touch User to Add Access"
 Note right of Client Node: Begin User registration timeout...
-User-&gt;Client Node: Touch RFID card to access point
+User->Client Node: Touch RFID card to access point
 Note right of Client Node: Client reads RFID UUID\n Touched within timeout?\n Yes - adds User to internal Database
-Client Node--&gt;User: Display "User Access Granted"
-</code></pre>
+Client Node-->User: Display "User Access Granted"
+</div>
 
 <h3>
 <a name="client-to-server-user-database-update" class="anchor" href="#client-to-server-user-database-update"><span class="octicon octicon-link"></span></a>Client to Server user database update</h3>
 
-<pre lang="sequence"><code>Note left of Client Node: User Update timeout elapsed?
+<div class="diagram">
+Note left of Client Node: User Update timeout elapsed?
 Note left of Client Node: Yes - Any Users stored internally?
 Note left of Client Node: Yes - Begin new User request
-Client Node-&gt;Server Node: Send "New User" request
+Client Node->Server Node: Send "New User" request
 Note right of Server Node: Is Client Authorised?\n Yes - add User to database
-Server Node--&gt;Client Node: Send "User Added" response
+Server Node-->Client Node: Send "User Added" response
 Note left of Client Node: Remove User from internal database
 Note left of Client Node: Any more Users to add?\n Yes - repeat above sequence
-</code></pre>
+</div>
 
 <hr>
 
@@ -235,6 +243,9 @@ Note left of Client Node: Any more Users to add?\n Yes - repeat above sequence
       </div>
     </div>
 
+	<script>
+		$(".diagram").sequenceDiagram({theme: 'hand'});
+	</script>
   
   </body>
 </html>
