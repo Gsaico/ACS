@@ -1,90 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>ACS by gctechspace</title>
-  </head>
-
-  <body>
-    <header>
-      <div class="inner">
-        <h1>ACS</h1>
-        <h2>Access Control System</h2>
-        <a href="https://github.com/gctechspace/ACS" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
-
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+<link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+<link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="javascripts/raphael-min.js"></script>
+<script src="javascripts/underscore-min.js"></script>
+<script src="javascripts/sequence-diagram-min.js"></script>
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>ACS by gctechspace</title>
+</head>
+<body>
+<header>
+<div class="inner">
+<h1>ACS</h1>
+<h2>Access Control System</h2>
+<a href="https://github.com/gctechspace/ACS" class="button"><small>View project on</small> GitHub</a>
+</div>
+</header>
+<div id="content-wrapper">
+<div class="inner clearfix">
+<section id="main-content">
+<h1>
 <a name="project-summary" class="anchor" href="#project-summary"><span class="octicon octicon-link"></span></a>Project Summary</h1>
-
 <p>The Access Control System (ACS) is a collection of hardware and software components that provides authorised and recorded access to doors and the usage of equipment throughout the GCTechspace facility.</p>
-
 <h1>
 <a name="software-design" class="anchor" href="#software-design"><span class="octicon octicon-link"></span></a>Software Design</h1>
-
 <p>The overall software design of the ACS is split into two (2) sections, Client and Server. A Server node authorises Clients via wireless means and hosts an internal web server that an administrator can access and manage users with. Clients connect to the Server node and register themselves as Client nodes. Clients can request access via Server validation from User driven requests. Clients can also operate in a Server less environment, with limited capability.</p>
-
 <h2>
 <a name="client-node" class="anchor" href="#client-node"><span class="octicon octicon-link"></span></a>Client node</h2>
-
 <p>Each Client node is registered with the Server node on boot and acts as a method of allowing or denying access to doors, lab equipment and other devices such as vending machines.</p>
-
 <h3>
 <a name="operational-modes" class="anchor" href="#operational-modes"><span class="octicon octicon-link"></span></a>Operational modes</h3>
-
 <p>These are the modes of operation for a Client Node:</p>
-
 <ul>
 <li>Normal mode (connected to Server Node)</li>
 <li>Fail-safe mode (disconnected from Server Node)</li>
 <li>User Management mode (add user using master key)</li>
 </ul>
-
 <h4>
 <a name="normal-mode" class="anchor" href="#normal-mode"><span class="octicon octicon-link"></span></a>Normal mode</h4>
-
 <p>The Client Node is successfully connected to the Server Node and is able to send and receive messages. The master key can add users to this node, via this node.</p>
-
 <h4>
 <a name="fail-safe-mode" class="anchor" href="#fail-safe-mode"><span class="octicon octicon-link"></span></a>Fail-safe mode</h4>
-
 <p>The Client Node is not connected to the Server Node but periodically checks to reconnect. Only keys stored internally (including the master key) will be allowed access to this node. The master key can add users to this node, via this node.</p>
-
 <h4>
 <a name="user-management-mode" class="anchor" href="#user-management-mode"><span class="octicon octicon-link"></span></a>User Management mode</h4>
-
 <p>The Client Node is not connected to the Server Node but periodically checks to reconnect. Only keys stored internally (including the master key) will be allowed access to this node. The master key can add users to this node, whilst in this mode. The master key must be used to add Users to the Client locally. The Client Node will then synchronise any new Users with the Server once it has re-established a connection.</p>
-
 <h2>
 <a name="server-node" class="anchor" href="#server-node"><span class="octicon octicon-link"></span></a>Server Node</h2>
-
 <p>Raspberry Pi / Beaglebone driven Linux system platform.</p>
-
 <p>...Insert content here about server / client communication method...</p>
-
 <h3>
 <a name="web-administration" class="anchor" href="#web-administration"><span class="octicon octicon-link"></span></a>Web administration</h3>
-
 <p>The Server hosts an internal Web Server that can be used by an Administrator to manage Users.
 A typical L.A.M.P setup can be used for this. Laravel as a PHP MVC framework would be the preferred stack to develop the administration console with. A mySQL database is used to store User access and User account details. Client nodes must be authorised by the web admin console. A unique UUID is used to identify Client Nodes when they are making requests to the Server.</p>
-
 <h2>
 <a name="user-stories-users-perspective" class="anchor" href="#user-stories-users-perspective"><span class="octicon octicon-link"></span></a>User Stories (User's perspective)</h2>
-
 <ul>
 <li><p>As a User, I want to enter / exit via the front door with my RF ID access card.</p></li>
 <li><p>As a User, I want to enter / exit a room with my RF ID access card.</p></li>
@@ -92,10 +71,8 @@ A typical L.A.M.P setup can be used for this. Laravel as a PHP MVC framework wou
 <li><p>As a User, I want to see my remaining credit on my account using my RF ID access card</p></li>
 <li><p>As a User, I want to use credit on my account on the vending machines using my RF ID access card</p></li>
 </ul>
-
 <h2>
 <a name="user-stories-gcts-perspective" class="anchor" href="#user-stories-gcts-perspective"><span class="octicon octicon-link"></span></a>User Stories (GCTS' perspective)</h2>
-
 <ul>
 <li><p>As GCTS, I want to manage Users via a web interface.</p></li>
 <li><p>As GCTS, I want to Grant User access to lab equipment via a double tap, master-key / new user RF ID authorised sequence</p></li>
@@ -103,141 +80,114 @@ A typical L.A.M.P setup can be used for this. Laravel as a PHP MVC framework wou
 <li><p>As GCTS, I want Client Nodes to be connected to the Server Node via wireless</p></li>
 <li><p>As GCTS, I want Client Nodes to time sync with the Server Node.</p></li>
 </ul>
-
 <h2>
 <a name="use-cases" class="anchor" href="#use-cases"><span class="octicon octicon-link"></span></a>Use Cases</h2>
-
 <p>Here are some of the use cases for the ACS as sequence diagrams:</p>
-
 <h3>
 <a name="general-door-access" class="anchor" href="#general-door-access"><span class="octicon octicon-link"></span></a>General Door Access</h3>
-
-<pre lang="sequence"><code>User-&gt;Client Node: Touch RFID card to access point at front door
+<div class="diagram">
+User->Client Node: Touch RFID card to access point at front door
 Note right of Client Node: Client reads RFID UUID
-Client Node-&gt;Server Node: "Access Attempted" message request
+Client Node->Server Node: "Access Attempted" message request
 Note right of Server Node: Server records attempt
 Note right of Server Node: Server retrieves record
-Server Node--&gt;Client Node: "Access Granted" message response
-Client Node--&gt;User: Display Message to User
+Server Node-->Client Node: "Access Granted" message response
+Client Node-->User: Display Message to User
 Note right of Client Node: Open door lock
-</code></pre>
-
+</div>
 <h3>
 <a name="general-lab-equipment-access" class="anchor" href="#general-lab-equipment-access"><span class="octicon octicon-link"></span></a>General Lab Equipment Access</h3>
-
-<pre lang="sequence"><code>User-&gt;Client Node: Touch RFID card to access point on equipment
+<div class="diagram">
+User->Client Node: Touch RFID card to access point on equipment
 Note right of Client Node: Client reads RFID UUID
-Client Node-&gt;Server Node: "Access Attempted" message request
+Client Node->Server Node: "Access Attempted" message request
 Note right of Server Node: Server records attempt
 Note right of Server Node: Server retrieves record
-Server Node--&gt;Client Node: "Access Granted" message response
-Client Node--&gt;User: Display Message to User
-Note right of Client Node: Allow equipment power on\Log start time
-User-&gt;Client Node: Touch RFID card to access point
-Note right of Client Node: Client reads RFID UUID\nSame User? Yes - Power off equipment\nLog stop time
-Client Node-&gt;Server Node: "Log Duration on Client" message request
-</code></pre>
-
+Server Node-->Client Node: "Access Granted" message response
+Client Node-->User: Display Message to User
+Note right of Client Node: Allow equipment power on\nLog start time
+User->Client Node: Touch RFID card to access point on equipment
+Note right of Client Node: Client reads RFID UUID\nSame user? Yes - Log stop time\nEquipment power off
+Client Node->Server Node: "Log user duration" message request
+</div>
 <h3>
 <a name="grant-a-user-access-to-lab-equipment" class="anchor" href="#grant-a-user-access-to-lab-equipment"><span class="octicon octicon-link"></span></a>Grant a User Access to Lab Equipment</h3>
-
-<pre lang="sequence"><code>Master Key-&gt;Client Node: Touch RFID card to access point
+<div class="diagram">
+Master Key->Client Node: Touch RFID card to access point
 Note right of Client Node: Read RFID UUID\n Recognises Master Key
-Client Node--&gt;Master Key: Display "Master operation mode activated"
+Client Node-->Master Key: Display "Master operation mode activated"
 Note right of Client Node: Power on equipment\n Begin User registration timeout...
-Master Key-&gt;Client Node: Touch RFID card to access point
+Master Key->Client Node: Touch RFID card to access point
 Note right of Client Node: Read RFID UUID\n Recognises Master Key\n Touched within timeout?\n Yes - Power off equipment
-Client Node--&gt;Master Key: Display "Touch User to Add Access"
+Client Node-->Master Key: Display "Touch User to Add Access"
 Note right of Client Node: Begin User registration timeout...
-User-&gt;Client Node: Touch RFID card to access point
+User->Client Node: Touch RFID card to access point
 Note right of Client Node: Client reads RFID UUID\n Touched within timeout?\n Yes - adds User to internal Database
-Client Node--&gt;User: Display "User Access Granted"
-</code></pre>
-
+Client Node-->User: Display "User Access Granted"
+</div>
 <h3>
 <a name="client-to-server-user-database-update" class="anchor" href="#client-to-server-user-database-update"><span class="octicon octicon-link"></span></a>Client to Server user database update</h3>
-
-<pre lang="sequence"><code>Note left of Client Node: User Update timeout elapsed?
+<div class="diagram">
+Note left of Client Node: User Update timeout elapsed?
 Note left of Client Node: Yes - Any Users stored internally?
 Note left of Client Node: Yes - Begin new User request
-Client Node-&gt;Server Node: Send "New User" request
+Client Node->Server Node: Send "New User" request
 Note right of Server Node: Is Client Authorised?\n Yes - add User to database
-Server Node--&gt;Client Node: Send "User Added" response
+Server Node-->Client Node: Send "User Added" response
 Note left of Client Node: Remove User from internal database
 Note left of Client Node: Any more Users to add?\n Yes - repeat above sequence
-</code></pre>
-
+</div>
 <hr>
-
 <h1>
 <a name="hardware-design" class="anchor" href="#hardware-design"><span class="octicon octicon-link"></span></a>Hardware Design</h1>
-
 <h2>
 <a name="insert-content-here" class="anchor" href="#insert-content-here"><span class="octicon octicon-link"></span></a>...Insert content here...</h2>
-
 <h3>
 <a name="gcduino" class="anchor" href="#gcduino"><span class="octicon octicon-link"></span></a>GCDuino..?</h3>
-
 <h3>
 <a name="isolated-switch---solid-state-relay" class="anchor" href="#isolated-switch---solid-state-relay"><span class="octicon octicon-link"></span></a>Isolated switch - solid state relay..?</h3>
-
 <h3>
 <a name="display-oled" class="anchor" href="#display-oled"><span class="octicon octicon-link"></span></a>Display (OLED)...?</h3>
-
 <h3>
 <a name="wireless-comms---nrf--wifi" class="anchor" href="#wireless-comms---nrf--wifi"><span class="octicon octicon-link"></span></a>Wireless comms - nRF / WiFi?</h3>
-
 <h3>
 <a name="rf-id-touch-point-details" class="anchor" href="#rf-id-touch-point-details"><span class="octicon octicon-link"></span></a>RF ID touch point details</h3>
-
 <hr>
-
 <h1>
 <a name="industrial-design" class="anchor" href="#industrial-design"><span class="octicon octicon-link"></span></a>Industrial Design</h1>
-
 <h2>
 <a name="insert-content-here-1" class="anchor" href="#insert-content-here-1"><span class="octicon octicon-link"></span></a>...Insert content here...</h2>
-
 <h3>
 <a name="mechanical-drawings--sketches" class="anchor" href="#mechanical-drawings--sketches"><span class="octicon octicon-link"></span></a>Mechanical Drawings / Sketches...</h3>
-
 <h3>
 <a name="3d-cad-design" class="anchor" href="#3d-cad-design"><span class="octicon octicon-link"></span></a>3D CAD design...</h3>
-
 <h3>
 <a name="3d-printing-details-go-here" class="anchor" href="#3d-printing-details-go-here"><span class="octicon octicon-link"></span></a>3D printing details go here...</h3>
-
 <hr>
-
 <h1>
 <a name="contributors" class="anchor" href="#contributors"><span class="octicon octicon-link"></span></a>Contributors</h1>
-
 <p><a href="https://github.com/SkipXtian">SkipXtian</a>
 <a href="https://github.com/ronnied">Ronnied</a></p>
-
 <h1>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
-
 <p><a href="LICENSE">Link to License</a></p>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/gctechspace/ACS/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/gctechspace/ACS/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/gctechspace/ACS"></a> is maintained by <a href="https://github.com/gctechspace">gctechspace</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
-
-  
-  </body>
+</section>
+<aside id="sidebar">
+<a href="https://github.com/gctechspace/ACS/zipball/master" class="button">
+<small>Download</small>
+.zip file
+</a>
+<a href="https://github.com/gctechspace/ACS/tarball/master" class="button">
+<small>Download</small>
+.tar.gz file
+</a>
+<p class="repo-owner"><a href="https://github.com/gctechspace/ACS"></a> is maintained by <a href="https://github.com/gctechspace">gctechspace</a>.</p>
+<p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+</aside>
+</div>
+</div>
+<script>
+$(".diagram").sequenceDiagram({theme: 'simple'});
+</script>
+</body>
 </html>
