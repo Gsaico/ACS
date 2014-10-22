@@ -104,11 +104,12 @@ Client Node->Server Node: "Access Attempted" message request
 Note right of Server Node: Server records attempt
 Note right of Server Node: Server retrieves record
 Server Node-->Client Node: "Access Granted" message response
-Client Node-->User: Display Message to User
+Client Node-->User: Display Credit remaining message to User
 Note right of Client Node: Allow equipment power on\nLog start time
 User->Client Node: Touch RFID card to access point on equipment
 Note right of Client Node: Client reads RFID UUID\nSame user? Yes - Log stop time\nEquipment power off
 Client Node->Server Node: "Log user duration" message request
+Client Node-->User: Display Credit remaining, time Logged to User
 </div>
 <h3>
 <a name="grant-a-user-access-to-lab-equipment" class="anchor" href="#grant-a-user-access-to-lab-equipment"><span class="octicon octicon-link"></span></a>Grant a User Access to Lab Equipment</h3>
