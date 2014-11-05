@@ -35,6 +35,10 @@ void Secure_nRF::begin(void)
 	_nRF.setRetries(4, 15);
 	_nRF.setPayloadSize(32);
 	_nRF.setDataRate(RF24_250KBPS);
+
+	// This needs more thought
+	_nRF.openReadingPipe(1, _destinationDeviceId);
+	_nRF.startListening();   
 }
 
 /**
@@ -167,6 +171,7 @@ void Secure_nRF::_txPacket(byte* packet)
 
 	_nRF.openWritingPipe(_destinationDeviceId);
 	_nRF.stopListening();
+	
 	bool ok = false;
 	do{
 		// Write packet to the radio module
@@ -184,13 +189,201 @@ void Secure_nRF::_txPacket(byte* packet)
 }
 
 /**
+ * Receive a packet for this local device id
+ */
+bool Secure_nRF::_rxPacket(byte* packet)
+{
+  int PAYLOAD_SIZE = 32;
+  
+  if (_nRF.available())
+  {
+    bool done = false;    
+    while (!done)
+    {
+      // Fetch the payload, and see if this was the last one.
+      done = _nRF.read(packet, PAYLOAD_SIZE);
+      //delay(2);      
+    }
+    
+	// Reset nRF
+	_nRF.stopListening();
+	_nRF.startListening();
+    
+    // Packet received
+    return true;
+  }
+  
+  // No packet waiting...
+  return false;
+}
+
+/**
  * Receive a Message from a remote Device
  *
  * returns false if no message or error
  */
 bool Secure_nRF::receiveMessage(byte* payload)
 {
+  Serial.println("receiveMessage:");
+  
+  _nRF.openReadingPipe(1, _destinationDeviceId);
+  _nRF.startListening();   
+  
+  int LED = 9;
+  byte rxBuff[32];
+    
+  if(_rxPacket(rxBuff)){
+
+    Serial.println("packet received, validating header packet type...");
+    
+    // We always assume the we are waiting for a new message... 
+    if(_isHeader(rxBuff) && _decodeHeader(rxBuff)){
+     
+      // wait for message packet
+      while(1){
+
+          Serial.println("awaiting message packet...");
+
+          if(_rxPacket(rxBuff)){
+            
+            _decodeMessage(rxBuff, payload);
+          }
+          break;          
+      } 
+    }
 	
+	return true;
+	
+  } else {
+     Serial.println("No packet.");
+ 
+    digitalWrite(LED, HIGH);  // Short blink to say NO message
+    Serial.print(".");    
+    delay(20);
+    digitalWrite(LED, LOW);
+    delay(20);
+	
+	return false;
+  }
+	
+}
+
+bool Secure_nRF::_isHeader(byte* header)
+{
+  // Check Packet Type
+  for(int i=0; i<8; i++){
+    if(header[i] != 0xFF){
+      Serial.println("NOT A HEADER PACKET!!!");
+      Serial.write(header, HEX);
+      Serial.println(" ");      
+      
+      return false;
+    } 
+  }
+  
+  Serial.println("Header packet type validated!");
+  
+  return true;
+}
+
+bool Secure_nRF::_decodeHeader(byte* header)
+{
+  int PAYLOAD_SIZE = 32;
+  
+  Serial.println("decodeHeader");
+  Serial.write(header, 32);
+  Serial.println(" ");
+  
+  // Clear the display
+  //lcd.clear();
+  //lcd.print("Header :");
+  
+  // Display header on LCD
+  //for(int i=0;i<PAYLOAD_SIZE;i++) {
+  //  lcd.write(header[i]);
+  //}
+  
+  // Check Packet Type
+  if(!_isHeader(header)){
+    
+      return false;
+  }
+    
+  // Decode Packet UUID
+  unsigned long uuid = ((unsigned long)(header[8]) << 24) + ((unsigned long)(header[9]) << 16) + ((unsigned long)(header[10]) << 8) + header[11];
+  Serial.println("UUID: ");
+  Serial.println(uuid);
+  
+  // Decode Message Type
+  byte msgType = header[12];
+  Serial.println("msgType: ");
+  Serial.println(msgType, HEX);
+  
+  // Decode Message Length
+  byte msgLen = header[13];
+  Serial.println("msgLen: ");
+  Serial.println(msgLen);
+  
+  // Decode AES IV
+  for(int i=14, j=0; i<30; i++, j++){
+    _localAESParams.iv[j] =  header[i];
+  } 
+  // debug
+  for(int i=0; i<16; i++){
+    Serial.print(_localAESParams.iv[i], HEX);
+  }
+  Serial.println(" "); 
+ 
+  // Verify the crc checksum
+  bool crcCheck = _crc.verifyCRC16(header, PAYLOAD_SIZE);
+  
+  if(crcCheck == true) {
+    Serial.println("CRC check ok.");
+    //lcd.print("Decoded:");
+    
+    return true;
+    
+  } else {      
+    Serial.println("CRC failed!");
+    //lcd.print("CRC err:");
+    
+    return false;
+  } 
+  
+}
+
+void Secure_nRF::_decodeMessage(byte* msg, byte* output)
+{
+  int PAYLOAD_SIZE = 32;
+  
+  Serial.println("decodeMessage");
+  Serial.write(msg, HEX);
+  Serial.println(" ");
+    
+  // Decrypt the Message
+  int blocks = 2;
+  byte succ = _aes.cbc_decrypt(msg, output, blocks, _localAESParams.iv);
+    
+  // Verify the crc checksum
+  bool crcCheck = _crc.verifyCRC16(output, PAYLOAD_SIZE);
+    
+  if(crcCheck == true) {
+    
+    // Display Decoded msg on LCD
+    //lcd.print("Decoded:");
+  
+    //for(int i=0;i<PAYLOAD_SIZE;i++) {
+    //  lcd.write(output[i]);
+    //}
+    Serial.write(output, PAYLOAD_SIZE);
+    Serial.println(" ");
+    
+  } else {      
+    //lcd.print("CRC err:");
+    Serial.println("CRC error in Message Packet");
+  }
+    
+  Serial.println("============================="); 
 }
 
 void Secure_nRF::randomiseIV(byte* iv)
